@@ -1,6 +1,4 @@
-﻿Imports Windows.Management.Deployment
-
-Public NotInheritable Class MainPage
+﻿Public NotInheritable Class MainPage
     Inherits Page
 
     Private Sub Nv_Loaded(sender As Object, e As RoutedEventArgs)
@@ -36,7 +34,8 @@ Public NotInheritable Class MainPage
         'Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "es-ES"
         'Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-US"
 
-        Cache.Cargar()
+        Configuracion.Cache.Cargar()
+        Configuracion.LimpiezaArchivos.Cargar()
         Interfaz.Videos.Cargar()
         Interfaz.AñadirTile.Cargar()
         MasTiles.Cargar()

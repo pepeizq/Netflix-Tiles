@@ -597,4 +597,13 @@
   <data name="Videos" xml:space="preserve">
     <value>Videos</value>
   </data>
+  <data name="ConfigFileCleaning.Text" xml:space="preserve">
+    <value>Limpieza de Archivos</value>
+  </data>
+  <data name="ConfigFileCleaning2.Text" xml:space="preserve">
+    <value>Puedes borrar todos los ficheros generados por la aplicación, pero una vez borrados se reiniciará la aplicación (esta opción no afecta a la Caché).</value>
+  </data>
+  <data name="ConfigFileCleaningClean.Text" xml:space="preserve">
+    <value>Borrar Archivos</value>
+  </data>
 </root>

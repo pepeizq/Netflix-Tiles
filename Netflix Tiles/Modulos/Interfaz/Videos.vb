@@ -217,17 +217,17 @@ Namespace Interfaz
                                     Dim int14 As Integer = temp13.IndexOf(ChrW(34))
                                     Dim temp14 As String = temp13.Remove(int14, temp13.Length - int14)
 
-                                    icono = temp14.Trim
+                                    icono = Await Configuracion.Cache.DescargarImagen(temp14.Trim, id + "icono", "icono")
                                 End If
                             End If
                             i += 1
                         End While
 
                         Dim imagenFondoEx As ImageEx = pagina.FindName("imagenFondo")
-                        imagenFondoEx.Source = imagenFondo
+                        imagenFondoEx.Source = Await Configuracion.Cache.DescargarImagen(imagenFondo, id + "fondo", "fondo")
 
                         Dim imagenLogoEx As ImageEx = pagina.FindName("imagenLogo")
-                        imagenLogoEx.Source = imagenLogo
+                        imagenLogoEx.Source = Await Configuracion.Cache.DescargarImagen(imagenLogo, id + "logo", "logo")
 
                         Dim gridImagen As Grid = pagina.FindName("gridImagen")
 
