@@ -543,21 +543,6 @@
   <data name="Albums" xml:space="preserve">
     <value>Álbumes</value>
   </data>
-  <data name="Spotify_SearchAlbum.Text" xml:space="preserve">
-    <value>Buscar Álbum</value>
-  </data>
-  <data name="Spotify_SearchMessage.Text" xml:space="preserve">
-    <value>Introduce el nombre del álbum o del artista, y clickea buscar:</value>
-  </data>
-  <data name="Spotify_StoreDescription" xml:space="preserve">
-    <value>Añade Tiles de tus álbumes de Spotify en el Menú Inicio de Windows 10.</value>
-  </data>
-  <data name="Spotify_StoreTags" xml:space="preserve">
-    <value>Spotify,Música</value>
-  </data>
-  <data name="Spotify_Title" xml:space="preserve">
-    <value>Tiles para los álbumes de Spotify</value>
-  </data>
   <data name="Webs" xml:space="preserve">
     <value>Páginas Web</value>
   </data>
@@ -605,5 +590,50 @@
   </data>
   <data name="ConfigFileCleaningClean.Text" xml:space="preserve">
     <value>Borrar Archivos</value>
+  </data>
+  <data name="Back.Text" xml:space="preserve">
+    <value>Volver</value>
+  </data>
+  <data name="Spotify_Albums.Text" xml:space="preserve">
+    <value>Álbumes</value>
+  </data>
+  <data name="Spotify_AlbumsPlaylists" xml:space="preserve">
+    <value>Álbumes y Playlists</value>
+  </data>
+  <data name="Spotify_Playlists.Text" xml:space="preserve">
+    <value>Playlists</value>
+  </data>
+  <data name="Spotify_SearchAlbum.Text" xml:space="preserve">
+    <value>Buscar Álbum</value>
+  </data>
+  <data name="Spotify_SearchAlbumMessage.Text" xml:space="preserve">
+    <value>Introduce el nombre del álbum o del artista, y clickea buscar:</value>
+  </data>
+  <data name="Spotify_SearchPlaylists.Text" xml:space="preserve">
+    <value>Buscar Playlists</value>
+  </data>
+  <data name="Spotify_SearchPlaylistsMessage.Text" xml:space="preserve">
+    <value>Introduce tu id de usuario:</value>
+  </data>
+  <data name="Spotify_StoreDescription" xml:space="preserve">
+    <value>Añade Tiles de tus álbumes y playlists de Spotify en el Menú Inicio de Windows 10.</value>
+  </data>
+  <data name="Spotify_StoreTags" xml:space="preserve">
+    <value>Spotify,Música,Playlists</value>
+  </data>
+  <data name="Spotify_Title" xml:space="preserve">
+    <value>Tiles para los álbumes y playlists de Spotify</value>
+  </data>
+  <data name="Spotify_UserID.Text" xml:space="preserve">
+    <value>Cómo averiguar tu id de usuario</value>
+  </data>
+  <data name="Netflix_SearchMessage2.Text" xml:space="preserve">
+    <value>Introduce el enlace de la película o serie:</value>
+  </data>
+  <data name="Title.Text" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="Url.Text" xml:space="preserve">
+    <value>Enlace</value>
   </data>
 </root>

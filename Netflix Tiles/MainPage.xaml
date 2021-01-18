@@ -84,8 +84,8 @@
             <Grid Padding="20">
                 <Grid x:Name="gridVideos" Visibility="Collapsed">
                     <ScrollViewer x:Name="svVideos" Padding="0,0,30,0" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <StackPanel Orientation="Vertical" Padding="30" Margin="30,0,30,30" MaxWidth="500" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="400">
+                            <StackPanel x:Name="spBuscadorVideos" Orientation="Vertical" Padding="30" Margin="30,0,30,0">
                                 <StackPanel.Background>
                                     <SolidColorBrush Color="{StaticResource ColorCuarto}" Opacity="0.8"/>
                                 </StackPanel.Background>
@@ -104,6 +104,38 @@
                                 </Button>
                             </StackPanel>
 
+                            <StackPanel x:Name="spBuscadorVideos2" Orientation="Vertical" Padding="30" Margin="30,0,30,0" Visibility="Collapsed">
+                                <StackPanel.Background>
+                                    <SolidColorBrush Color="{StaticResource ColorCuarto}" Opacity="0.8"/>
+                                </StackPanel.Background>
+
+                                <TextBlock x:Uid="Netflix_SearchMessage2" Foreground="White" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+
+                                <TextBox x:Name="tbBuscadorVideos2" RequestedTheme="Dark" Margin="0,20,0,30"/>
+
+                                <Button x:Name="botonBuscarVideos2" Style="{ThemeResource ButtonRevealStyle}" Background="{StaticResource ColorCuarto}" Padding="18,15" BorderThickness="0" HorizontalAlignment="Center">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconos:FontAwesome Icon="Solid_Search" Foreground="White" Margin="0,0,15,0"/>
+                                            <TextBlock x:Uid="Netflix_SearchVideo" Foreground="White"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            
+                            <StackPanel x:Name="spBotonesVideos" Orientation="Horizontal" HorizontalAlignment="Right" Margin="30,0,30,30">
+                                <Button x:Name="botonBuscadorVideos" Background="Transparent" Padding="15,10" BorderThickness="0">
+                                    <Button.Content>
+                                        <TextBlock x:Uid="Title" Foreground="White" FontSize="13"/>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="botonBuscadorVideos2" Background="Transparent" Padding="15,10" BorderThickness="0">
+                                    <Button.Content>
+                                        <TextBlock x:Uid="Url" Foreground="White" FontSize="13"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            
                             <ProgressBar x:Name="pbBuscadorVideos" IsIndeterminate="True" Width="150" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed" Margin="0,0,0,20"/>
 
                             <Grid x:Name="gridImagen" MaxWidth="620" MaxHeight="620" HorizontalAlignment="Center" Margin="0,30,0,0">

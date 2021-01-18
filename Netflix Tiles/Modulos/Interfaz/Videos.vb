@@ -2,6 +2,7 @@
 Imports Microsoft.Toolkit.Uwp.UI.Controls
 Imports Newtonsoft.Json
 Imports Windows.Storage
+Imports Windows.UI
 
 Namespace Interfaz
 
@@ -9,45 +10,107 @@ Namespace Interfaz
 
         Public Sub Cargar()
 
+            Dim config As ApplicationDataContainer = ApplicationData.Current.LocalSettings
             Dim recursos As New Resources.ResourceLoader
 
             Dim frame As Frame = Window.Current.Content
             Dim pagina As Page = frame.Content
 
-            Dim tbBuscadorVideos As TextBox = pagina.FindName("tbBuscadorVideos")
+            Dim spBuscadorVideos As StackPanel = pagina.FindName("spBuscadorVideos")
+            Dim spBuscadorVideos2 As StackPanel = pagina.FindName("spBuscadorVideos2")
 
-            AddHandler tbBuscadorVideos.TextChanged, AddressOf BuscadorVideosTextoCambia
+            If config.Values("BuscadorBotones") = Nothing Then
+                config.Values("BuscadorBotones") = 0
+            End If
+
+            If config.Values("BuscadorBotones") = 0 Then
+                spBuscadorVideos.Visibility = Visibility.Visible
+                spBuscadorVideos2.Visibility = Visibility.Collapsed
+            Else
+                spBuscadorVideos.Visibility = Visibility.Collapsed
+                spBuscadorVideos2.Visibility = Visibility.Visible
+            End If
+
+            '----------------------------------------------
 
             Dim botonBuscarVideos As Button = pagina.FindName("botonBuscarVideos")
             botonBuscarVideos.IsEnabled = False
 
             AddHandler botonBuscarVideos.Click, AddressOf BuscarVideosClick
-            AddHandler botonBuscarVideos.PointerEntered, AddressOf EfectosHover.Entra_Boton_IconoTexto
-            AddHandler botonBuscarVideos.PointerExited, AddressOf EfectosHover.Sale_Boton_IconoTexto
+            AddHandler botonBuscarVideos.PointerEntered, AddressOf EfectosHover.Entra_Boton_1_05
+            AddHandler botonBuscarVideos.PointerExited, AddressOf EfectosHover.Sale_Boton_1_05
+
+            Dim tbBuscadorVideos As TextBox = pagina.FindName("tbBuscadorVideos")
+            tbBuscadorVideos.Tag = botonBuscarVideos
+            AddHandler tbBuscadorVideos.TextChanged, AddressOf BuscadorVideosTextoCambia
+
+            '----------------------------------------------
+
+            Dim botonBuscarVideos2 As Button = pagina.FindName("botonBuscarVideos2")
+            botonBuscarVideos2.IsEnabled = False
+
+            AddHandler botonBuscarVideos2.Click, AddressOf BuscarVideosClick2
+            AddHandler botonBuscarVideos2.PointerEntered, AddressOf EfectosHover.Entra_Boton_1_05
+            AddHandler botonBuscarVideos2.PointerExited, AddressOf EfectosHover.Sale_Boton_1_05
+
+            Dim tbBuscadorVideos2 As TextBox = pagina.FindName("tbBuscadorVideos2")
+            tbBuscadorVideos2.Tag = botonBuscarVideos2
+            AddHandler tbBuscadorVideos2.TextChanged, AddressOf BuscadorVideosTextoCambia
+
+            '----------------------------------------------
+
+            Dim fondoBoton As New SolidColorBrush With {
+                .Color = App.Current.Resources("ColorCuarto"),
+                .Opacity = 0.8
+            }
+
+            Dim spBotonesVideos As StackPanel = pagina.FindName("spBotonesVideos")
+            spBotonesVideos.Width = spBuscadorVideos.Width
+
+            Dim botonBuscadorVideos As Button = pagina.FindName("botonBuscadorVideos")
+            botonBuscadorVideos.Tag = 0
+
+            If config.Values("BuscadorBotones") = 0 Then
+                botonBuscadorVideos.Background = fondoBoton
+            Else
+                botonBuscadorVideos.Background = New SolidColorBrush(Colors.Transparent)
+            End If
+
+            AddHandler botonBuscadorVideos.Click, AddressOf CambiarModo
+            AddHandler botonBuscadorVideos.PointerEntered, AddressOf EfectosHover.Entra_Boton_Texto
+            AddHandler botonBuscadorVideos.PointerExited, AddressOf EfectosHover.Sale_Boton_Texto
+
+            Dim botonBuscadorVideos2 As Button = pagina.FindName("botonBuscadorVideos2")
+            botonBuscadorVideos2.Tag = 1
+
+            If config.Values("BuscadorBotones") = 0 Then
+                botonBuscadorVideos2.Background = New SolidColorBrush(Colors.Transparent)
+            Else
+                botonBuscadorVideos2.Background = fondoBoton
+            End If
+
+            AddHandler botonBuscadorVideos2.Click, AddressOf CambiarModo
+            AddHandler botonBuscadorVideos2.PointerEntered, AddressOf EfectosHover.Entra_Boton_Texto
+            AddHandler botonBuscadorVideos2.PointerExited, AddressOf EfectosHover.Sale_Boton_Texto
 
         End Sub
 
         Private Sub BuscadorVideosTextoCambia(sender As Object, e As TextChangedEventArgs)
 
-            Dim frame As Frame = Window.Current.Content
-            Dim pagina As Page = frame.Content
-
-            Dim botonBuscarVideos As Button = pagina.FindName("botonBuscarVideos")
-
             Dim tb As TextBox = sender
+            Dim boton As Button = tb.Tag
 
             If tb.Text.Trim.Length > 2 Then
-                botonBuscarVideos.IsEnabled = True
+                boton.IsEnabled = True
             Else
-                botonBuscarVideos.IsEnabled = False
+                boton.IsEnabled = False
             End If
 
         End Sub
 
         Private Async Sub BuscarVideosClick(sender As Object, e As RoutedEventArgs)
 
-            Dim boton As Button = sender
-            boton.IsEnabled = False
+            Estado(False, False)
 
             Dim frame As Frame = Window.Current.Content
             Dim pagina As Page = frame.Content
@@ -110,7 +173,7 @@ Namespace Interfaz
                     Dim temp4 As String = temp3.Remove(int4, temp3.Length - int4)
 
                     If temp4.Trim.Contains("https://www.netflix.com/") And temp4.Trim.Contains("/title/") Then
-                        AbrirAPIoNetflix(temp4.Trim)
+                        AbrirAPIoNetflix(temp4.Trim, botonBuscarVideos)
                     Else
                         Dim config As ApplicationDataContainer = ApplicationData.Current.LocalSettings
                         config.Values("Buscador") = 1
@@ -140,18 +203,12 @@ Namespace Interfaz
                     Dim temp4 As String = temp3.Remove(int4, temp3.Length - int4)
 
                     If temp4.Trim.Contains("https://www.netflix.com/") And temp4.Trim.Contains("/title/") Then
-                        AbrirAPIoNetflix(temp4.Trim)
+                        AbrirAPIoNetflix(temp4.Trim, botonBuscarVideos)
                     Else
-                        botonBuscarVideos.IsEnabled = True
-                        pbBuscadorVideos.Visibility = Visibility.Collapsed
-                        tbBuscadorVideos.IsEnabled = True
-                        tbBuscadorVideos.Text = String.Empty
+                        Estado(True, True)
                     End If
                 Else
-                    botonBuscarVideos.IsEnabled = True
-                    pbBuscadorVideos.Visibility = Visibility.Collapsed
-                    tbBuscadorVideos.IsEnabled = True
-                    tbBuscadorVideos.Text = String.Empty
+                    Estado(True, True)
                 End If
             ElseIf enlace.Contains("https://www.netflix.com/") Then
                 Dim html As String = Await wv.InvokeScriptAsync("eval", New String() {"document.documentElement.outerHTML;"})
@@ -253,35 +310,48 @@ Namespace Interfaz
                         Dim video As New Tile(titulo, id, enlace2, icono, imagenLogo, imagen, imagen)
                         botonBuscarVideos.Tag = video
 
-                        Netflix.BotonTile_Click()
+                        Netflix.BotonTile_Click(botonBuscarVideos)
                     End If
                 End If
 
-                botonBuscarVideos.IsEnabled = True
-                pbBuscadorVideos.Visibility = Visibility.Collapsed
-                tbBuscadorVideos.IsEnabled = True
-                tbBuscadorVideos.Text = String.Empty
-
+                Estado(True, True)
             End If
 
         End Sub
 
-        Private Async Sub AbrirAPIoNetflix(enlace As String)
+        Private Sub BuscarVideosClick2(sender As Object, e As RoutedEventArgs)
+
+            Estado(False, False)
 
             Dim frame As Frame = Window.Current.Content
             Dim pagina As Page = frame.Content
 
-            Dim int As Integer = enlace.IndexOf("/title/")
-            Dim temp As String = enlace.Remove(0, int + 7)
+            Dim tbBuscadorVideos2 As TextBox = pagina.FindName("tbBuscadorVideos2")
+            Dim id As String = tbBuscadorVideos2.Text.Trim
 
-            temp = temp.Replace("/", Nothing)
+            Dim boton As Button = sender
+            AbrirAPIoNetflix(id, boton)
 
-            If temp.Contains("?") Then
-                Dim int2 As Integer = temp.IndexOf("?")
-                temp = temp.Remove(int2, temp.Length - int2)
+        End Sub
+
+        Private Async Sub AbrirAPIoNetflix(enlace As String, boton As Button)
+
+            Dim frame As Frame = Window.Current.Content
+            Dim pagina As Page = frame.Content
+
+            If enlace.Contains("/title/") Then
+                Dim int As Integer = enlace.IndexOf("/title/")
+                enlace = enlace.Remove(0, int + 7)
             End If
 
-            Dim id As String = temp.Trim
+            enlace = enlace.Replace("/", Nothing)
+
+            If enlace.Contains("?") Then
+                Dim int2 As Integer = enlace.IndexOf("?")
+                enlace = enlace.Remove(int2, enlace.Length - int2)
+            End If
+
+            Dim id As String = enlace.Trim
             Dim resultadoDatos As List(Of NetflixDatos) = Nothing
             Dim resultadoImagenes As NetflixImagenes = Nothing
             Dim abrirNetflix As Integer = 0
@@ -307,10 +377,6 @@ Namespace Interfaz
             End If
 
             If abrirNetflix = 2 Then
-                Dim botonBuscarVideos As Button = pagina.FindName("botonBuscarVideos")
-                Dim pbBuscadorVideos As ProgressBar = pagina.FindName("pbBuscadorVideos")
-                Dim tbBuscadorVideos As TextBox = pagina.FindName("tbBuscadorVideos")
-
                 Dim titulo As String = WebUtility.HtmlDecode(resultadoDatos(0).Titulo)
 
                 Dim enlace2 As String = String.Empty
@@ -350,19 +416,94 @@ Namespace Interfaz
                 Dim grande As String = resultadoImagenes.Imagenes_284x398(azar.Next(0, resultadoImagenes.Imagenes_284x398.Count - 1)).Enlace
 
                 Dim video As New Tile(titulo, id, enlace2, icono, logo, ancha, grande)
-                botonBuscarVideos.Tag = video
+                boton.Tag = video
 
-                Netflix.BotonTile_Click()
+                Netflix.BotonTile_Click(boton)
 
-                botonBuscarVideos.IsEnabled = True
-                pbBuscadorVideos.Visibility = Visibility.Collapsed
-                tbBuscadorVideos.IsEnabled = True
-                tbBuscadorVideos.Text = String.Empty
+                Estado(True, True)
             Else
                 Dim wvBuscador As WebView = pagina.FindName("wvBuscador")
                 wvBuscador.Navigate(New Uri(enlace))
             End If
 
+        End Sub
+
+        Private Sub CambiarModo(sender As Object, e As RoutedEventArgs)
+
+            Dim frame As Frame = Window.Current.Content
+            Dim pagina As Page = frame.Content
+
+            Dim spBuscadorVideos As StackPanel = pagina.FindName("spBuscadorVideos")
+            Dim spBuscadorVideos2 As StackPanel = pagina.FindName("spBuscadorVideos2")
+
+            Dim botonBuscadorVideos As Button = pagina.FindName("botonBuscadorVideos")
+            Dim botonBuscadorVideos2 As Button = pagina.FindName("botonBuscadorVideos2")
+
+            Dim fondoBoton As New SolidColorBrush With {
+                .Color = App.Current.Resources("ColorCuarto"),
+                .Opacity = 0.8
+            }
+
+            Dim boton As Button = sender
+            Dim modo As Integer = boton.Tag
+
+            Dim config As ApplicationDataContainer = ApplicationData.Current.LocalSettings
+            config.Values("BuscadorBotones") = modo
+
+            If modo = 0 Then
+                spBuscadorVideos.Visibility = Visibility.Visible
+                spBuscadorVideos2.Visibility = Visibility.Collapsed
+
+                botonBuscadorVideos.Background = fondoBoton
+                botonBuscadorVideos2.Background = New SolidColorBrush(Colors.Transparent)
+            Else
+                spBuscadorVideos.Visibility = Visibility.Collapsed
+                spBuscadorVideos2.Visibility = Visibility.Visible
+
+                botonBuscadorVideos.Background = New SolidColorBrush(Colors.Transparent)
+                botonBuscadorVideos2.Background = fondoBoton
+            End If
+
+        End Sub
+
+        Private Sub Estado(estado As Boolean, borrarTexto As Boolean)
+
+            Dim frame As Frame = Window.Current.Content
+            Dim pagina As Page = frame.Content
+
+            Dim botonBuscadorVideos As Button = pagina.FindName("botonBuscadorVideos")
+            botonBuscadorVideos.IsEnabled = estado
+
+            Dim botonBuscadorVideos2 As Button = pagina.FindName("botonBuscadorVideos2")
+            botonBuscadorVideos2.IsEnabled = estado
+
+            Dim pbBuscadorVideos As ProgressBar = pagina.FindName("pbBuscadorVideos")
+
+            If estado = False Then
+                pbBuscadorVideos.Visibility = Visibility.Visible
+            Else
+                pbBuscadorVideos.Visibility = Visibility.Collapsed
+            End If
+
+            Dim tbBuscadorVideos As TextBox = pagina.FindName("tbBuscadorVideos")
+            tbBuscadorVideos.IsEnabled = estado
+
+            If borrarTexto = True Then
+                tbBuscadorVideos.Text = String.Empty
+            End If
+
+            Dim tbBuscadorVideos2 As TextBox = pagina.FindName("tbBuscadorVideos2")
+            tbBuscadorVideos2.IsEnabled = estado
+
+            If borrarTexto = True Then
+                tbBuscadorVideos2.Text = String.Empty
+            End If
+
+            Dim botonBuscarVideos As Button = pagina.FindName("botonBuscarVideos")
+            botonBuscadorVideos.IsEnabled = estado
+
+            Dim botonBuscarVideos2 As Button = pagina.FindName("botonBuscarVideos2")
+            botonBuscadorVideos2.IsEnabled = estado
         End Sub
 
     End Module

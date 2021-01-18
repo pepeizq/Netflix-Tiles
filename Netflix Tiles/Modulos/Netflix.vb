@@ -14,7 +14,7 @@ Module Netflix
     'playVideoId
     'searchTerm
 
-    Public Sub BotonTile_Click()
+    Public Sub BotonTile_Click(boton As Button)
 
         Trial.Detectar()
         Interfaz.AñadirTile.ResetearValores()
@@ -22,8 +22,7 @@ Module Netflix
         Dim frame As Frame = Window.Current.Content
         Dim pagina As Page = frame.Content
 
-        Dim botonBuscarVideos As Button = pagina.FindName("botonBuscarVideos")
-        Dim juego As Tile = botonBuscarVideos.Tag
+        Dim juego As Tile = boton.Tag
 
         Dim botonAñadirTile As Button = pagina.FindName("botonAñadirTile")
         botonAñadirTile.Tag = juego
@@ -39,7 +38,7 @@ Module Netflix
 
         '---------------------------------------------
 
-        ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("animacionJuego", botonBuscarVideos)
+        ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("animacionJuego", boton)
         Dim animacion As ConnectedAnimation = ConnectedAnimationService.GetForCurrentView().GetAnimation("animacionJuego")
 
         If Not animacion Is Nothing Then

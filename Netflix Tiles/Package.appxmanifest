@@ -9,7 +9,7 @@
   <Identity
     Name="5078pepeizq.TilesforNetflixMoviesandSeries"
     Publisher="CN=C91088FC-231C-4E13-86D1-5F9658173DA7"
-    Version="1.0.5.0" />
+    Version="1.0.6.0" />
 
   <mp:PhoneIdentity PhoneProductId="ce97e5af-6def-4932-8fe0-a6f32aa567d6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
