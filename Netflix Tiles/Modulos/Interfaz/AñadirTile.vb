@@ -548,7 +548,7 @@ Namespace Interfaz
             tsImagenTransparenciaTileGrande.IsOn = True
 
             Dim tsImagenTituloTileGrande As ToggleSwitch = pagina.FindName("tsImagenTituloTileGrande")
-            tsImagenTituloTileGrande.IsOn = True
+            tsImagenTituloTileGrande.IsOn = False
 
             Dim cbImagenTituloColorTileGrande As ComboBox = pagina.FindName("cbImagenTituloColorTileGrande")
             cbImagenTituloColorTileGrande.SelectedIndex = 0

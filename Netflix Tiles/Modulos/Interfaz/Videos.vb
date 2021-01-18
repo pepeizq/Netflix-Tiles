@@ -1,4 +1,6 @@
-﻿Imports Microsoft.Toolkit.Uwp.UI.Controls
+﻿Imports System.Net
+Imports Microsoft.Toolkit.Uwp.UI.Controls
+Imports Newtonsoft.Json
 Imports Windows.Storage
 
 Namespace Interfaz
@@ -108,7 +110,7 @@ Namespace Interfaz
                     Dim temp4 As String = temp3.Remove(int4, temp3.Length - int4)
 
                     If temp4.Trim.Contains("https://www.netflix.com/") And temp4.Trim.Contains("/title/") Then
-                        wv.Navigate(New Uri(temp4.Trim))
+                        AbrirAPIoNetflix(temp4.Trim)
                     Else
                         Dim config As ApplicationDataContainer = ApplicationData.Current.LocalSettings
                         config.Values("Buscador") = 1
@@ -138,7 +140,7 @@ Namespace Interfaz
                     Dim temp4 As String = temp3.Remove(int4, temp3.Length - int4)
 
                     If temp4.Trim.Contains("https://www.netflix.com/") And temp4.Trim.Contains("/title/") Then
-                        wv.Navigate(New Uri(temp4.Trim))
+                        AbrirAPIoNetflix(temp4.Trim)
                     Else
                         botonBuscarVideos.IsEnabled = True
                         pbBuscadorVideos.Visibility = Visibility.Collapsed
@@ -260,6 +262,105 @@ Namespace Interfaz
                 tbBuscadorVideos.IsEnabled = True
                 tbBuscadorVideos.Text = String.Empty
 
+            End If
+
+        End Sub
+
+        Private Async Sub AbrirAPIoNetflix(enlace As String)
+
+            Dim frame As Frame = Window.Current.Content
+            Dim pagina As Page = frame.Content
+
+            Dim int As Integer = enlace.IndexOf("/title/")
+            Dim temp As String = enlace.Remove(0, int + 7)
+
+            temp = temp.Replace("/", Nothing)
+
+            If temp.Contains("?") Then
+                Dim int2 As Integer = temp.IndexOf("?")
+                temp = temp.Remove(int2, temp.Length - int2)
+            End If
+
+            Dim id As String = temp.Trim
+            Dim resultadoDatos As List(Of NetflixDatos) = Nothing
+            Dim resultadoImagenes As NetflixImagenes = Nothing
+            Dim abrirNetflix As Integer = 0
+
+            Dim htmlDatos As String = Await Decompiladores.HttpClient(New Uri("https://unogs.com/api/title/detail?netflixid=" + id))
+
+            If Not htmlDatos = Nothing Then
+                resultadoDatos = JsonConvert.DeserializeObject(Of List(Of NetflixDatos))(htmlDatos)
+
+                If Not resultadoDatos Is Nothing Then
+                    abrirNetflix += 1
+                End If
+            End If
+
+            Dim htmlImagenes As String = Await Decompiladores.HttpClient(New Uri("https://unogs.com/api/title/bgimages?netflixid=" + id))
+
+            If Not htmlImagenes = Nothing Then
+                resultadoImagenes = JsonConvert.DeserializeObject(Of NetflixImagenes)(htmlImagenes)
+
+                If Not resultadoImagenes Is Nothing Then
+                    abrirNetflix += 1
+                End If
+            End If
+
+            If abrirNetflix = 2 Then
+                Dim botonBuscarVideos As Button = pagina.FindName("botonBuscarVideos")
+                Dim pbBuscadorVideos As ProgressBar = pagina.FindName("pbBuscadorVideos")
+                Dim tbBuscadorVideos As TextBox = pagina.FindName("tbBuscadorVideos")
+
+                Dim titulo As String = WebUtility.HtmlDecode(resultadoDatos(0).Titulo)
+
+                Dim enlace2 As String = String.Empty
+
+                If resultadoDatos(0).Tipo.ToLower = "series" Then
+                    enlace2 = "netflix:/app?browseVideoId=" + id
+                Else
+                    enlace2 = "netflix:/app?playVideoId=" + id
+                End If
+
+                Dim icono As String = String.Empty
+
+                If Not resultadoImagenes.Imagenes_166x233 Is Nothing Then
+                    icono = resultadoImagenes.Imagenes_166x233(0).Enlace
+                End If
+
+                If icono = String.Empty Then
+                    If Not resultadoImagenes.Imagenes_665x374 Is Nothing Then
+                        icono = resultadoImagenes.Imagenes_665x374(0).Enlace
+                    End If
+                End If
+
+                Dim logo As String = String.Empty
+
+                If Not resultadoImagenes.Logo Is Nothing Then
+                    logo = resultadoImagenes.Logo(0).Enlace
+                End If
+
+                If logo = String.Empty Then
+                    If Not resultadoImagenes.Imagenes_1280x720 Is Nothing Then
+                        logo = resultadoImagenes.Imagenes_1280x720(0).Enlace
+                    End If
+                End If
+
+                Dim azar As New Random
+                Dim ancha As String = resultadoImagenes.Imagenes_1280x720(azar.Next(0, resultadoImagenes.Imagenes_1280x720.Count - 1)).Enlace
+                Dim grande As String = resultadoImagenes.Imagenes_284x398(azar.Next(0, resultadoImagenes.Imagenes_284x398.Count - 1)).Enlace
+
+                Dim video As New Tile(titulo, id, enlace2, icono, logo, ancha, grande)
+                botonBuscarVideos.Tag = video
+
+                Netflix.BotonTile_Click()
+
+                botonBuscarVideos.IsEnabled = True
+                pbBuscadorVideos.Visibility = Visibility.Collapsed
+                tbBuscadorVideos.IsEnabled = True
+                tbBuscadorVideos.Text = String.Empty
+            Else
+                Dim wvBuscador As WebView = pagina.FindName("wvBuscador")
+                wvBuscador.Navigate(New Uri(enlace))
             End If
 
         End Sub
